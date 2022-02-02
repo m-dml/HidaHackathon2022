@@ -61,9 +61,8 @@ def main():
     lr_logger = LearningRateMonitor()
     trainer = pl.Trainer(
         max_epochs=2,
-        gpus=2,
+        gpus=1,
         gradient_clip_val=0.1,
-        strategy="ddp"
         # limit_train_batches=300,
         # callbacks=[lr_logger, early_stop_callback],
         # max_steps=5
