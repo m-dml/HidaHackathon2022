@@ -37,7 +37,7 @@ def main():
     max_prediction_length = 24*7
 
     # create validation and training dataset
-    tb_logger = TensorBoardLogger(save_dir="lightning_logs/tb_logs", log_graph=False)
+    # tb_logger = TensorBoardLogger(save_dir="lightning_logs/tb_logs", log_graph=False)
     training = TimeSeriesDataSet(
         data,
         time_idx="Time [s]",
@@ -74,10 +74,9 @@ def main():
     early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=1, verbose=False, mode="min")
     lr_logger = LearningRateMonitor()
     trainer = pl.Trainer(
-        max_epochs=10,
+        max_epochs=2,
         gpus=1,
         gradient_clip_val=0.1,
-        logger=tb_logger,
         callbacks=[lr_logger, early_stop_callback],
         # max_steps=5
     )
@@ -88,7 +87,7 @@ def main():
         learning_rate=0.03,
         hidden_size=32,
         dropout=0.1,
-        log_interval=1,
+        log_interval=100,
         reduce_on_plateau_patience=4
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
