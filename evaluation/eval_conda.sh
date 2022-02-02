@@ -2,6 +2,7 @@
 
 #SBATCH --job-name=AI-HERO-Energy_baseline_evaluation_conda
 #SBATCH --partition=haicore-gpu4
+#SBATCH --reservation=ai_hero
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
