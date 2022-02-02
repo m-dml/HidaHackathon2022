@@ -67,7 +67,7 @@ def main():
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
     tft.load_state_dict(torch.load(os.path.join(args.weights_path, "complete_model.weights")))
 
-    test_dataloader = testing.to_dataloader(train=False, batch_size=128, num_workers=10)
+    test_dataloader = testing.to_dataloader(train=False, batch_size=512, num_workers=10)
 
     predictions = []
 
