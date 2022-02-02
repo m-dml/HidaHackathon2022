@@ -9,6 +9,10 @@
 #SBATCH --cpus-per-task=10
 
 export CUDA_CACHE_DISABLE=1
+source activate hydra
+export CUDA_VISIBLE_DEVICES=0,1
+export NCCL_NSOCKS_PERTHREAD=4
+export NCCL_SOCKET_NTHREADS=2
 
 data_dir=/gpfs/work/machnitz
 weights_path=/gpfs/work/machnitz/weights/
