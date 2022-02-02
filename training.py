@@ -10,6 +10,7 @@ from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_forecasting.data.encoders import TorchNormalizer
 
+
 def main():
     parser = ArgumentParser()
     parser.add_argument("--data_dir", default="/hkfs/work/workspace/scratch/bh6321-energy_challenge/data/", type=str)
@@ -23,8 +24,10 @@ def main():
     data = pd.read_csv(train_data_file)
     data["Time [s]"] = (pd.to_datetime(data["Time [s]"]).view(np.int64).to_numpy() / 10**9 / 3600).astype(int)
     data["Load [MWh]"] = data["Load [MWh]"]
+    data["City"] = data.City.astype('category').cat.codes
+
     # define dataset
-    max_encoder_length = 24*7
+    max_encoder_length = 24*7 + 1
     max_prediction_length = 24*7
 
     # create validation and training dataset
@@ -33,6 +36,8 @@ def main():
         time_idx="Time [s]",
         target="Load [MWh]",
         group_ids=["City"],
+        min_encoder_length=max_encoder_length,
+        min_prediction_length=max_prediction_length,
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
@@ -55,8 +60,8 @@ def main():
     )
 
     batch_size = 128
-    train_dataloader = training.to_dataloader(train=True, batch_size=batch_size, num_workers=5)
-    val_dataloader = validation.to_dataloader(train=False, batch_size=batch_size, num_workers=5)
+    train_dataloader = training.to_dataloader(train=True, batch_size=batch_size, num_workers=0)
+    val_dataloader = validation.to_dataloader(train=False, batch_size=batch_size, num_workers=0)
 
     # define trainer with early stopping
     early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=1, verbose=False, mode="min")
@@ -65,7 +70,7 @@ def main():
         max_epochs=2,
         gpus=1,
         gradient_clip_val=0.1,
-        # limit_train_batches=300,
+        limit_train_batches=300,
         # callbacks=[lr_logger, early_stop_callback],
         # max_steps=5
     )
@@ -93,4 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
