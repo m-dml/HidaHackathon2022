@@ -8,6 +8,7 @@ from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_forecasting.data.encoders import TorchNormalizer
 import pytorch_lightning as pl
+from pytorch_forecasting.utils import move_to_device
 
 def main():
     np.random.seed(42)
@@ -28,7 +29,7 @@ def main():
     save_dir = args.save_dir
     data_dir = args.data_dir
     # load data
-    test_data_file = os.path.join(data_dir, "test.csv" )
+    test_data_file = os.path.join(data_dir, "test.csv")
     if not os.path.exists(test_data_file):
         test_data_file = os.path.join(data_dir, "valid.csv")
 
@@ -36,7 +37,7 @@ def main():
     data["Time [s]"] = (pd.to_datetime(data["Time [s]"]).view(np.int64).to_numpy() / 10**9 / 3600).astype(int)
     data["City"] = data.City.astype('category').cat.codes.astype(int)
 
-    print("len(data) ", len(data) )
+    print("len(data) ", len(data))
 
     # define dataset
     max_encoder_length = 24*7 + 1
@@ -65,25 +66,18 @@ def main():
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
     tft.load_state_dict(torch.load(os.path.join(args.weights_path, "complete_model.weights")))
-    tft.eval()
-
-    trainer = pl.Trainer(
-        max_epochs=2,
-        gpus=1,
-        gradient_clip_val=0.1,
-        # limit_train_batches=300,
-        # callbacks=[lr_logger, early_stop_callback],
-        # max_steps=5
-    )
 
     test_dataloader = testing.to_dataloader(train=False, batch_size=128, num_workers=10)
-    print("len(test_dataloader): ", len(test_dataloader))
+
     predictions = []
+
+    device = "cuda"
+    tft.to(device)
     with torch.no_grad():
         for x, y in test_dataloader:
-            prediction = tft(x)["prediction"][:, :, 0].detach().cpu().numpy()
-            predictions.append(prediction)
 
+            prediction = tft(move_to_device(x, device))["prediction"][:, :, 0].detach().cpu().numpy()
+            predictions.append(prediction)
 
     predictions = np.concatenate(predictions, axis=0)
     prediction_df = pd.DataFrame(predictions)
@@ -95,6 +89,5 @@ def main():
 
 
 if __name__ == "__main__":
-
     df = main()
 
