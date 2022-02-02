@@ -3,12 +3,13 @@ from argparse import ArgumentParser
 
 import numpy as np
 import pandas as pd
+import pytorch_lightning as pl
 import torch
 from pytorch_forecasting import TimeSeriesDataSet
-from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_forecasting.data.encoders import TorchNormalizer
-import pytorch_lightning as pl
+from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_forecasting.utils import move_to_device
+
 
 def main():
     np.random.seed(42)
@@ -34,14 +35,14 @@ def main():
         test_data_file = os.path.join(data_dir, "valid.csv")
 
     data = pd.read_csv(test_data_file)
-    data["Time [s]"] = (pd.to_datetime(data["Time [s]"]).view(np.int64).to_numpy() / 10**9 / 3600).astype(int)
-    data["City"] = data.City.astype('category').cat.codes.astype(int)
+    data["Time [s]"] = (pd.to_datetime(data["Time [s]"]).view(np.int64).to_numpy() / 10 ** 9 / 3600).astype(int)
+    data["City"] = data.City.astype("category").cat.codes.astype(int)
 
     print("len(data) ", len(data))
 
     # define dataset
-    max_encoder_length = 24*7 + 1
-    max_prediction_length = 24*7
+    max_encoder_length = 24 * 7 + 1
+    max_prediction_length = 24 * 7
 
     testing = TimeSeriesDataSet(
         data,
@@ -57,12 +58,7 @@ def main():
 
     # create the model
     tft = DeepAR.from_dataset(
-        testing,
-        learning_rate=0.03,
-        hidden_size=32,
-        dropout=0.0,
-        log_interval=2,
-        reduce_on_plateau_patience=4
+        testing, learning_rate=0.03, hidden_size=32, dropout=0.0, log_interval=2, reduce_on_plateau_patience=4
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
     tft.load_state_dict(torch.load(os.path.join(args.weights_path, "complete_model.weights")))
@@ -81,7 +77,7 @@ def main():
 
     predictions = np.concatenate(predictions, axis=0)
     prediction_df = pd.DataFrame(predictions)
-    result_path = os.path.join(save_dir, 'forecasts.csv')
+    result_path = os.path.join(save_dir, "forecasts.csv")
     prediction_df.to_csv(result_path, header=False, index=False)
     print(f"Done! The result is saved in {result_path}")
     print(len(prediction_df))
@@ -90,4 +86,3 @@ def main():
 
 if __name__ == "__main__":
     df = main()
-
