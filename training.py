@@ -8,8 +8,7 @@ import torch
 from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
-from pytorch_forecasting.metrics import NegativeBinomialDistributionLoss
-
+from pytorch_forecasting.data.encoders import TorchNormalizer
 
 def main():
     parser = ArgumentParser()
@@ -37,6 +36,7 @@ def main():
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
+        scalers={"Load [MWh]" :TorchNormalizer()},
     )
 
     val_data = pd.read_csv(val_data_file)
@@ -51,6 +51,7 @@ def main():
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
+        scalers={"Load [MWh]": TorchNormalizer()},
     )
 
     batch_size = 128
@@ -76,8 +77,7 @@ def main():
         hidden_size=32,
         dropout=0.1,
         log_interval=2,
-        loss=NegativeBinomialDistributionLoss(),
-        reduce_on_plateau_patience=4,
+        reduce_on_plateau_patience=4
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 
