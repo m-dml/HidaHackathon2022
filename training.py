@@ -8,7 +8,7 @@ import torch
 from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
-from pytorch_forecasting.metrics import MAE
+from pytorch_forecasting.metrics import NegativeBinomialDistributionLoss
 
 
 def main():
@@ -75,9 +75,9 @@ def main():
         learning_rate=0.03,
         hidden_size=32,
         dropout=0.1,
-        loss=MAE(),
         log_interval=2,
-        reduce_on_plateau_patience=4
+        loss=NegativeBinomialDistributionLoss(),
+        reduce_on_plateau_patience=4,
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 
