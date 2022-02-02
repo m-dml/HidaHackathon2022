@@ -9,9 +9,15 @@ from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models.deepar import DeepAR
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_forecasting.data.encoders import TorchNormalizer
+from pytorch_lightning.loggers import TensorBoardLogger
 
 
 def main():
+
+    np.random.seed(42)
+    torch.manual_seed(42)
+    pl.seed_everything(42)
+
     parser = ArgumentParser()
     parser.add_argument("--data_dir", default="/hkfs/work/workspace/scratch/bh6321-energy_challenge/data/", type=str)
     parser.add_argument("--save_dir", default="/hkfs/work/workspace/scratch/bh6321-E1/weights", help="saves the model, if path is provided")
@@ -31,6 +37,7 @@ def main():
     max_prediction_length = 24*7
 
     # create validation and training dataset
+    tb_logger = TensorBoardLogger(save_dir="lightning_logs/tb_logs", log_graph=False)
     training = TimeSeriesDataSet(
         data,
         time_idx="Time [s]",
@@ -60,18 +67,18 @@ def main():
     )
 
     batch_size = 128
-    train_dataloader = training.to_dataloader(train=True, batch_size=batch_size, num_workers=0)
-    val_dataloader = validation.to_dataloader(train=False, batch_size=batch_size, num_workers=0)
+    train_dataloader = training.to_dataloader(train=True, batch_size=batch_size, num_workers=10)
+    val_dataloader = validation.to_dataloader(train=False, batch_size=batch_size, num_workers=10)
 
     # define trainer with early stopping
     early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=1, verbose=False, mode="min")
     lr_logger = LearningRateMonitor()
     trainer = pl.Trainer(
-        max_epochs=2,
+        max_epochs=10,
         gpus=1,
         gradient_clip_val=0.1,
-        limit_train_batches=300,
-        # callbacks=[lr_logger, early_stop_callback],
+        logger=tb_logger,
+        callbacks=[lr_logger, early_stop_callback],
         # max_steps=5
     )
 
@@ -81,7 +88,7 @@ def main():
         learning_rate=0.03,
         hidden_size=32,
         dropout=0.1,
-        log_interval=2,
+        log_interval=1,
         reduce_on_plateau_patience=4
     )
     print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
@@ -92,6 +99,7 @@ def main():
     )
 
     # save the feature_extractor_weights:
+
     state_dict = tft.state_dict()
     torch.save(state_dict, os.path.join(args.save_dir, f"complete_model.weights"))
 

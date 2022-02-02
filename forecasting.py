@@ -10,6 +10,10 @@ from pytorch_forecasting.data.encoders import TorchNormalizer
 import pytorch_lightning as pl
 
 def main():
+    np.random.seed(42)
+    torch.manual_seed(42)
+    pl.seed_everything(42)
+
     parser = ArgumentParser()
     parser.add_argument("--weights_path", type=str, default=".", help="Model weights path")
     parser.add_argument("--save_dir", type=str, help="Directory where weights and results are saved", default=".")
@@ -72,7 +76,7 @@ def main():
         # max_steps=5
     )
 
-    test_dataloader = testing.to_dataloader(train=False, batch_size=128, num_workers=0)
+    test_dataloader = testing.to_dataloader(train=False, batch_size=128, num_workers=10)
     print("len(test_dataloader): ", len(test_dataloader))
     predictions = []
     with torch.no_grad():
