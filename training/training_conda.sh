@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 #SBATCH --job-name=AI-HERO-Energy_baseline_forecast_conda
-#SBATCH --partition=accelerated
+#SBATCH --partition=haicore-gpu4
+#SBATCH --reservation=ai_hero
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
