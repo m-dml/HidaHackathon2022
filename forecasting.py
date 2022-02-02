@@ -6,6 +6,7 @@ import pandas as pd
 import torch
 from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models.deepar import DeepAR
+from pytorch_forecasting.data.encoders import TorchNormalizer
 
 
 def main():
@@ -42,6 +43,7 @@ def main():
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
+        target_normalizer=TorchNormalizer(),
     )
 
 
