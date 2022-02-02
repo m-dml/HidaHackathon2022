@@ -18,4 +18,4 @@ group_workspace=/hkfs/work/workspace/scratch/bh6321-${group_name}
 data_dir=/hkfs/work/workspace/scratch/bh6321-energy_challenge/data
 weights_path=${group_workspace}/weights/
 
-python -u ${group_workspace}/Dynamic-Ants/forecast.py --save_dir "$PWD" --data_dir ${data_dir} --weights_path ${weights_path}
+/home/haicore-project-hereon/eu7630/miniconda3/envs/plankton/bin/python ${group_workspace}/HidaHackathon2022/training.py --save_dir "$PWD" --data_dir ${data_dir}

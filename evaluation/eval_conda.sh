@@ -16,6 +16,5 @@ group_workspace=/hkfs/work/workspace/scratch/bh6321-${group_name}
 data_dir=/hkfs/work/workspace/scratch/bh6321-energy_challenge/data
 forecast_path=${group_workspace}/AI-HERO-Energy/forecasts.csv
 
-source /hkfs/work/workspace/scratch/im9193-conda/conda/etc/profile.d/conda.sh
-conda activate ${group_workspace}/energy_baseline_conda_env
-python3 -u ${group_workspace}/AI-HERO-Energy/evaluation.py --save_dir "$PWD" --data_dir ${data_dir} --forecast_path ${forecast_path}
+
+/home/haicore-project-hereon/eu7630/miniconda3/envs/plankton/bin/python ${group_workspace}/AI-HERO-Energy/evaluation.py --save_dir "$PWD" --data_dir ${data_dir} --forecast_path ${forecast_path}

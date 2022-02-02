@@ -10,7 +10,6 @@
 #SBATCH --cpus-per-task=72
 
 export CUDA_CACHE_DISABLE=1
-module load devel/python/3.8
 
 group_name=E1
 group_workspace=/hkfs/work/workspace/scratch/bh6321-${group_name}
@@ -18,4 +17,4 @@ group_workspace=/hkfs/work/workspace/scratch/bh6321-${group_name}
 data_dir=/hkfs/work/workspace/scratch/bh6321-energy_challenge/data
 weights_path=${group_workspace}/weights/
 
-python -u ${group_workspace}/Dynamic-Ants/forecast.py --save_dir "$PWD" --data_dir ${data_dir} --weights_path ${weights_path}
+/home/haicore-project-hereon/eu7630/miniconda3/envs/plankton/bin/python ${group_workspace}/HidaHackathon2022/forecasting.py --save_dir "$PWD" --data_dir ${data_dir} --weights_path ${weights_path}
