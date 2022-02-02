@@ -13,4 +13,4 @@ export CUDA_CACHE_DISABLE=1
 data_dir=/gpfs/work/machnitz
 weights_path=/gpfs/work/machnitz/weights/
 
-/gpfs/home/machnitz/miniconda3/envs/hydra/bin/python /gpfs/home/machnitz/HidaHackaton2022/training.py --save_dir "$PWD" --data_dir ${data_dir} --weights_path ${weights_path}
+/gpfs/home/machnitz/miniconda3/envs/hydra/bin/python /gpfs/home/machnitz/HidaHackathon2022/training.py --save_dir "$PWD" --data_dir ${data_dir} --weights_path ${weights_path}
