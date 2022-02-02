@@ -36,7 +36,7 @@ def main():
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
-        scalers={"Load [MWh]" :TorchNormalizer()},
+        target_normalizer=TorchNormalizer(),
     )
 
     val_data = pd.read_csv(val_data_file)
@@ -51,7 +51,7 @@ def main():
         max_encoder_length=max_encoder_length,
         max_prediction_length=max_prediction_length,
         time_varying_unknown_reals=["Load [MWh]"],
-        scalers={"Load [MWh]": TorchNormalizer()},
+        target_normalizer=TorchNormalizer(),
     )
 
     batch_size = 128
