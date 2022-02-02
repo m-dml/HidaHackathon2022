@@ -1,4 +1,4 @@
-name: hydratorch
+name: antvironment
 
 channels:
   - conda-forge
@@ -23,21 +23,10 @@ dependencies:
   - hydra-core
   - jupyterlab
   - scikit-learn
-  - rich
   - pandas
-  - dask
-  - distributed
   - numpy
   - seaborn
   - python-dotenv
-  - onnx
-  - pillow
   - tqdm
-  - pip:
-      - onnxruntime
-      - hydra-colorlog
-      - hydra-optuna-sweeper
-      - hydra-submitit-launcher
-      - test-tube
-      - fairscale
-      - https://github.com/ufoym/imbalanced-dataset-sampler/archive/master.zip # torchsampler
+  - pytorch-forecasting
+  - pip

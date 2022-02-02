@@ -1,5 +1,0 @@
-defaults:
-  - base_lightning_module
-  - _self_
-
-optimizer: ${optimizer}

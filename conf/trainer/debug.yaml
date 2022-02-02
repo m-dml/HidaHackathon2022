@@ -1,5 +1,0 @@
-defaults:
-  - base_trainer
-  - _self_
-
-gpus: 0
