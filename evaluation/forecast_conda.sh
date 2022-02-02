@@ -7,7 +7,7 @@
 #SBATCH --ntasks=1
 #SBATCH --time=00:30:00
 #SBATCH --output=./baseline_forecast_conda.txt
-#SBATCH --cpus-per-task=72
+#SBATCH --cpus-per-task=30
 
 export CUDA_CACHE_DISABLE=1
 
